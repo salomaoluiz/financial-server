@@ -1,7 +1,5 @@
-import Elysia from "elysia";
+import { app } from "@entrypoint";
 
-new Elysia().get("/", () => {
-  console.log("Hello World");
-}).listen(Bun.env?.PORT);
+app.listen(Bun.env?.PORT);
 
 console.log(`Server was started on port: http://localhost:${Bun.env.PORT}`);
