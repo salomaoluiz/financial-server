@@ -11,8 +11,9 @@ datasource db {
 }
 
 model Category {
-  id          Int    @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   description String
+  type        String // Should be Enum type EXPENSE | INVOICE but Sqlite dont support it
 }
 
 model Transaction {
