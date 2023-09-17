@@ -1,5 +1,7 @@
-declare module 'bun' {
+declare module "bun" {
   export interface Env {
-    PORT: number
+    NODE_ENV: string;
+    PORT: number;
+    DATABASE_URL: string;
   }
 }

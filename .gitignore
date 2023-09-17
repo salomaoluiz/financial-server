@@ -169,3 +169,6 @@ dist
 
 # IntelliJ based IDEs
 .idea
+
+mydb.sqlite*
+prisma/migrations/*

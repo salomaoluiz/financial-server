@@ -17,6 +17,7 @@
     "allowJs": true,
     "baseUrl": "./src",
     "paths": {
+      "@db": ["external/db"],
       "@db/*": ["external/db/*"],
     },
     "types": [
