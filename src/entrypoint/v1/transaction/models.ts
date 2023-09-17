@@ -7,20 +7,20 @@ export interface INewTransactionBody {
   description: string;
   value: number;
   date: string;
-  // categoryId: number;
+  categoryId: number;
 }
 
 export const NewTransactionBody = t.Object(
   {
     description: t.String(),
-    value: t.Number(),
+    value: t.Number({ exclusiveMinimum: 0 }),
     date: t.String({
       format: "date",
       pattern: jsRegexDatePattern,
       default: new Date().toISOString(),
       error: `The date is not a valid date, try something like: ${new Date().toISOString()}`,
     }),
-    // categoryId: t.Number(),
+    categoryId: t.Number({ multipleOf: 1, minimum: 1 }),
   },
   {
     additionalProperties: false,
