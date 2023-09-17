@@ -1,8 +1,9 @@
 import { t } from "elysia";
+import { madeSchemaOptional } from "@entrypoint/utils/made-schema-optional";
 
 const CATEGORY_TYPE = {
   EXPENSE: "EXPENSE",
-  INVOICE: "INVOICE",
+  INCOME: "INCOME",
 };
 export interface INewCategoryBody {
   description: string;
@@ -23,16 +24,13 @@ export const NewCategoryBody = t.Object(
   },
 );
 
-export const EditCategoryBody = t.Object(
-  Object.keys(NewCategoryBody.properties).reduce((prev, key) => {
-    return Object.assign(prev, {
-      [key]: t.Optional(
-        NewCategoryBody.properties[
-          key as keyof typeof NewCategoryBody.properties
-        ],
-      ),
-    });
-  }, {}),
-);
+export const EditCategoryBody = t.Object(madeSchemaOptional(NewCategoryBody));
+
+export interface IFilterCategoryParams {
+  type?: string
+}
+export const FilterCategoryParams = t.Object({
+  type: t.Optional(NewCategoryBody.properties.type),
+});
 
 export const GetByIdParams = t.Object({ id: t.String({ pattern: "^\\d*$" }) });

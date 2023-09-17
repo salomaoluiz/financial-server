@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import {
   CreateArgs,
   DeleteArgs,
+  FindManyArgs,
   FindUniqueArgs,
   PrismaModel,
   Repository,
@@ -63,6 +64,12 @@ export class PrismaDatabase extends Database {
     const delegate = this.db![this.collection!] as unknown as Repository<D, R>;
 
     return delegate.delete({ where: { id: parseInt(id) } });
+  }
+
+  async find<D extends FindManyArgs<unknown>, R>(filter: unknown): Promise<R> {
+    const delegate = this.db![this.collection!] as unknown as Repository<D, R>;
+
+    return delegate.findMany({ where: filter });
   }
 
   async run<R>(callback: () => Promise<R>): Promise<R> {

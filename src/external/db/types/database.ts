@@ -27,6 +27,9 @@ export class Database<T = unknown> {
     throw new Error("Should implements in children class");
   }
 
+  async find<D, R>(filter: D): Promise<R> {
+    throw new Error("Should implements in children class");
+  }
   async update<D, R>(id: string, data: D): Promise<R> {
     throw new Error("Should implements in children class");
   }

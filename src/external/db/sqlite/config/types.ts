@@ -19,6 +19,11 @@ export type FindUnique<Arg, Entity> = (
   args: FindUniqueArgs<Arg>,
 ) => Promise<Entity>;
 
+export type FindManyArgs<Arg> = Prisma.Args<{ where: Arg }, "findMany">;
+export type FindMany<Arg, Entity> = (
+  args: FindManyArgs<Arg>,
+) => Promise<Entity>;
+
 export type PrismaClientMethod =
   | "$on"
   | "$connect"
@@ -37,6 +42,7 @@ export type PrismaModel = keyof Omit<PrismaClient, PrismaClientMethod>;
 export interface Repository<Args, Entity> {
   create: Create<Args, Entity>;
   findUnique: FindUnique<Args, Entity>;
+  findMany: FindMany<Args, Entity>
   update: Update<Args & { data: unknown; where: unknown }, Entity>;
   delete: Delete<Args, Entity>;
 }

@@ -1,5 +1,10 @@
 import Elysia from "elysia";
-import { EditCategoryBody, GetByIdParams, NewCategoryBody } from "./models";
+import {
+  EditCategoryBody,
+  FilterCategoryParams,
+  GetByIdParams,
+  NewCategoryBody,
+} from "./models";
 import { db } from "@db";
 
 export const categoryRoute = new Elysia({ prefix: "/category" })
@@ -8,6 +13,7 @@ export const categoryRoute = new Elysia({ prefix: "/category" })
   .model({
     newCategory: NewCategoryBody,
     editCategory: EditCategoryBody,
+    filterCategory: FilterCategoryParams,
     getById: GetByIdParams,
   });
 
@@ -21,6 +27,24 @@ categoryRoute.post(
     return result;
   },
   { body: "newCategory" },
+);
+
+categoryRoute.get(
+  "/",
+  async ({ query, database, set }) => {
+    const instances = database.getCategory();
+    const result = await instances.find(query);
+
+    if (!result) {
+      set.status = 404;
+      throw new Error("NOT FOUND");
+    }
+    set.status = 200;
+    return result;
+  },
+  {
+    query: "filterCategory",
+  },
 );
 
 categoryRoute.get(

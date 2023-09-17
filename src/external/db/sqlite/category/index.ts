@@ -1,5 +1,5 @@
 import { Database } from "@db/types/database";
-import { INewCategoryBody } from "@entrypoint/v1/category/models";
+import { IFilterCategoryParams, INewCategoryBody } from "@entrypoint/v1/category/models";
 import { Prisma } from "@prisma/client";
 
 export class CategoryDatabase {
@@ -31,6 +31,17 @@ export class CategoryDatabase {
         Prisma.CategoryFindUniqueArgs,
         Prisma.CategorySelect
       >(id);
+    };
+
+    return await this.run(callback);
+  }
+
+  async find(filter: IFilterCategoryParams) {
+    const callback = async () => {
+      return this.instance!.find<
+        Prisma.CategoryFindManyArgs['where'],
+        Prisma.CategorySelect
+      >(filter);
     };
 
     return await this.run(callback);
