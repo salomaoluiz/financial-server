@@ -1,5 +1,9 @@
 import Elysia from "elysia";
-import { GetByIdParams, NewTransactionBody } from "./models";
+import {
+  FilterTransactionParams,
+  GetByIdParams,
+  NewTransactionBody,
+} from "./models";
 import { db } from "@db";
 
 export const transactionRoute = new Elysia({ prefix: "/transaction" })
@@ -7,6 +11,7 @@ export const transactionRoute = new Elysia({ prefix: "/transaction" })
   .use(db)
   .model({
     newTransaction: NewTransactionBody,
+    filterTransactionParams: FilterTransactionParams,
     getById: GetByIdParams,
   });
 
@@ -20,6 +25,24 @@ transactionRoute.post(
     return result;
   },
   { body: "newTransaction" },
+);
+
+transactionRoute.get(
+  "/",
+  async ({ query, database, set }) => {
+    const instances = database.getTransaction();
+    const result = await instances.find(query);
+
+    if (!result) {
+      set.status = 404;
+      throw new Error("NOT FOUND");
+    }
+    set.status = 200;
+    return result;
+  },
+  {
+    query: "filterTransactionParams",
+  },
 );
 
 transactionRoute.get(

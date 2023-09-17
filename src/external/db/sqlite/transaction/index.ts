@@ -1,6 +1,10 @@
 import { Database } from "@db/types/database";
-import { INewTransactionBody } from "@entrypoint/v1/transaction/models";
+import {
+  IFilterTransactionParams,
+  INewTransactionBody,
+} from "@entrypoint/v1/transaction/models";
 import { Prisma } from "@prisma/client";
+import { handleFindFilter } from "@db/sqlite/transaction/filter";
 
 export class TransactionDatabase {
   instance?: Database;
@@ -31,6 +35,17 @@ export class TransactionDatabase {
         Prisma.TransactionFindUniqueArgs,
         Prisma.TransactionSelect
       >(id);
+    };
+
+    return await this.run(callback);
+  }
+
+  async find(filter: Partial<IFilterTransactionParams>) {
+    const callback = async () => {
+      return this.instance!.find<
+        Prisma.TransactionFindManyArgs["where"],
+        Prisma.TransactionSelect
+      >(handleFindFilter(filter));
     };
 
     return await this.run(callback);
