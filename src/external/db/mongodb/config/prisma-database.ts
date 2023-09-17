@@ -8,7 +8,7 @@ import {
   PrismaModel,
   Repository,
   UpdateArgs,
-} from "@db/sqlite/config/types";
+} from "@db/mongodb/config/types";
 
 export class PrismaDatabase extends Database {
   static instance?: PrismaDatabase;

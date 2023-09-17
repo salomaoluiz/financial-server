@@ -6,22 +6,29 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:mydb.sqlite"
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 model Category {
-  id          Int           @id @default(autoincrement())
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
   description String
   type        String // Should be Enum type EXPENSE | INVOICE but Sqlite dont support it
-  Transaction Transaction[]
+  transaction Transaction[]
 }
 
 model Transaction {
-  id          Int      @id @default(autoincrement())
+  id             String           @id @default(auto()) @map("_id") @db.ObjectId
+  description    String
+  value          Float
+  date           DateTime
+  category       Category         @relation(fields: [categoryId], references: [id])
+  categoryId     String           @db.ObjectId
+  subTransaction SubTransaction[]
+}
+
+type SubTransaction {
+  id          String @db.ObjectId
   description String
-  value       Float
-  date        DateTime
-  category    Category @relation(fields: [categoryId], references: [id])
-  categoryId  Int
+  value       String
 }

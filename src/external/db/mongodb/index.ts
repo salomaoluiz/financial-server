@@ -1,12 +1,10 @@
 import { PrismaClient } from "@prisma/client";
-import { TransactionDatabase } from "@db/sqlite/transaction";
-import { PrismaDatabase } from "@db/sqlite/config/prisma-database";
-import { CategoryDatabase } from "@db/sqlite/category";
+import { TransactionDatabase } from "@db/mongodb/transaction";
+import { PrismaDatabase } from "@db/mongodb/config/prisma-database";
+import { CategoryDatabase } from "@db/mongodb/category";
 
 export const getDatabase = () => {
-  const database = new PrismaClient({
-    datasources: { db: { url: Bun.env?.DATABASE_URL } },
-  });
+  const database = new PrismaClient();
 
   const instance = PrismaDatabase.getInstance(database);
 

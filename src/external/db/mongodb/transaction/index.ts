@@ -4,7 +4,7 @@ import {
   INewTransactionBody,
 } from "@entrypoint/v1/transaction/models";
 import { Prisma } from "@prisma/client";
-import { handleFindFilter } from "@db/sqlite/transaction/filter";
+import { handleFindFilter } from "@db/mongodb/transaction/filter";
 
 export class TransactionDatabase {
   instance?: Database;
