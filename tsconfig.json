@@ -19,6 +19,8 @@
     "paths": {
       "@db": ["external/db"],
       "@db/*": ["external/db/*"],
+      "@entrypoint": ["entrypoint"],
+      "@entrypoint/*": ["entrypoint/*"],
     },
     "types": [
       "bun-types" // add Bun global
