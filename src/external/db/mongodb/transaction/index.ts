@@ -30,7 +30,11 @@ export class TransactionDatabase implements PrismaDatabase {
               description: subTransaction.description,
               value: subTransaction.value,
               categoryId: subTransaction.categoryId,
+              tags: data.tags,
             })),
+          }),
+          ...(data.tags && {
+            tags: data.tags,
           }),
           description: data.description,
           date: data.date,

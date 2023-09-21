@@ -1,7 +1,7 @@
 import { t } from "elysia";
 import startOfMonth from "date-fns/startOfMonth";
 import endOfMonth from "date-fns/endOfMonth";
-import {madeSchemaOptional} from "@entrypoint/utils/made-schema-optional.ts";
+import { madeSchemaOptional } from "@entrypoint/utils/made-schema-optional.ts";
 
 const jsRegexMonthPattern =
   "^[0-9]{4}-((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01])|(0[469]|11)-(0[1-9]|[12][0-9]|30)|(02)-(0[1-9]|[12][0-9]))";
@@ -14,6 +14,7 @@ interface BaseTransaction {
   description: string;
   categoryId: string;
   value: number;
+  tags?: string[];
 }
 
 export interface INewTransactionBody extends BaseTransaction {
@@ -30,6 +31,7 @@ export interface INewSubTransactionBody extends BaseTransaction {
 const BaseTransactionBody = t.Object({
   description: t.String(),
   categoryId: t.String({ default: "65074dfff07e0c6b1ba1a2ec" }),
+  tags: t.Optional(t.Array(t.String({ default: "650cd6224356ff173b373f86" }))),
 });
 
 export const NewTransactionBody = t.Object(
@@ -88,8 +90,12 @@ export const FilterTransactionParams = t.Object({
   categoryId: t.Optional(t.String({ pattern: "^\\d*$" })),
 });
 
-export const EditTransactionBody = t.Object(madeSchemaOptional(NewTransactionBody))
-export const EditSubTransactionBody = t.Object(madeSchemaOptional(NewSubTransactionBody))
+export const EditTransactionBody = t.Object(
+  madeSchemaOptional(NewTransactionBody),
+);
+export const EditSubTransactionBody = t.Object(
+  madeSchemaOptional(NewSubTransactionBody),
+);
 export const GetByIdParams = t.Object({
   transactionId: t.String(),
 });

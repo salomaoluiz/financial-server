@@ -16,10 +16,16 @@ enum CategoryType {
 }
 
 model Category {
-  id             String           @id @default(auto()) @map("_id") @db.ObjectId
-  description    String
-  type           CategoryType
-  transaction    Transaction[]
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  description String
+  type        CategoryType
+  transaction Transaction[]
+}
+
+model Tag {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  transaction Transaction[]
 }
 
 model Transaction {
@@ -31,6 +37,8 @@ model Transaction {
   category       Category         @relation(fields: [categoryId], references: [id])
   categoryId     String           @db.ObjectId
   subTransaction SubTransaction[]
+  Tag            Tag?             @relation(fields: [tags], references: [id])
+  tags           String[]         @db.ObjectId
 }
 
 type SubTransaction {
