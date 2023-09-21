@@ -10,17 +10,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum CategoryType {
+  INCOME
+  EXPENSE
+}
+
 model Category {
   id          String        @id @default(auto()) @map("_id") @db.ObjectId
   description String
-  type        String // Should be Enum type EXPENSE | INVOICE but Sqlite dont support it
+  type        CategoryType
   transaction Transaction[]
 }
 
 model Transaction {
   id             String           @id @default(auto()) @map("_id") @db.ObjectId
   description    String
-  partnerName    String
+  partnerName    String?
   value          Float
   date           DateTime
   category       Category         @relation(fields: [categoryId], references: [id])
