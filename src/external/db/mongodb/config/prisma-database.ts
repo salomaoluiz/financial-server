@@ -1,30 +1,19 @@
-import { Database } from "@db/types/database";
 import { PrismaClient } from "@prisma/client";
-import {
-  CreateArgs,
-  DeleteArgs,
-  FindManyArgs,
-  FindUniqueArgs,
-  PrismaModel,
-  Repository,
-  UpdateArgs,
-} from "@db/mongodb/config/types";
 
-export class PrismaDatabase extends Database {
+export class PrismaDatabase {
   static instance?: PrismaDatabase;
   db?: PrismaClient;
-  declare collection?: PrismaModel;
 
-  constructor(database: PrismaClient) {
-    super();
-    this.db = database;
+  constructor(db: PrismaClient) {
+    this.db = db
   }
+
   static getInstance(database: PrismaClient) {
-    if (!Database.instance && database) {
-      Database.instance = new PrismaDatabase(database);
+    if (!this.instance && database) {
+      this.instance = new PrismaDatabase(database);
     }
 
-    return Database.instance!;
+    return this.instance!;
   }
 
   async connect(): Promise<void> {
@@ -35,44 +24,33 @@ export class PrismaDatabase extends Database {
     this.db?.$disconnect();
   }
 
-  async create<D extends CreateArgs<unknown>, R>(data: D): Promise<R> {
-    const delegate = this.db![this.collection!] as unknown as Repository<D, R>;
-
-    return delegate.create({ data });
+  async create(data: any): Promise<any> {
+    throw new Error("Should implements in children class");
   }
 
-  async findById<D extends FindUniqueArgs<{ where: { id: number } }>, R>(
-    id: string,
-  ): Promise<R> {
-    const delegate = this.db![this.collection!] as unknown as Repository<D, R>;
-
-    return delegate.findUnique({ where: { id: parseInt(id) } });
+  async findById(id: string): Promise<any> {
+    throw new Error("Should implements in children class");
   }
 
-  async update<D extends UpdateArgs<{ where: { id: number } }, unknown>, R>(
-    id: string,
-    data: D,
-  ): Promise<R> {
-    const delegate = this.db![this.collection!] as unknown as Repository<D, R>;
-
-    return delegate.update({ where: { id: parseInt(id) }, data });
+  async find(filter: any): Promise<any> {
+    throw new Error("Should implements in children class");
   }
-
-  async delete<D extends DeleteArgs<{ where: { id: number } }>, R>(
-    id: string,
-  ): Promise<R> {
-    const delegate = this.db![this.collection!] as unknown as Repository<D, R>;
-
-    return delegate.delete({ where: { id: parseInt(id) } });
+  async update(id: string, data: any): Promise<any> {
+    throw new Error("Should implements in children class");
   }
-
-  async find<D extends FindManyArgs<unknown>, R>(filter: unknown): Promise<R> {
-    const delegate = this.db![this.collection!] as unknown as Repository<D, R>;
-
-    return delegate.findMany({ where: filter });
+  async delete(id: string): Promise<any> {
+    throw new Error("Should implements in children class");
   }
 
   async run<R>(callback: () => Promise<R>): Promise<R> {
-    return super.run(callback);
+    if (this.db) {
+      await this.connect();
+      const result = await callback();
+      await this.disconnect();
+
+      return result;
+    }
+
+    throw new Error("DB is not initialized");
   }
 }

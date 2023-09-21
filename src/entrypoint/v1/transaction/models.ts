@@ -1,6 +1,7 @@
 import { t } from "elysia";
 import startOfMonth from "date-fns/startOfMonth";
 import endOfMonth from "date-fns/endOfMonth";
+import {madeSchemaOptional} from "@entrypoint/utils/made-schema-optional.ts";
 
 const jsRegexMonthPattern =
   "^[0-9]{4}-((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01])|(0[469]|11)-(0[1-9]|[12][0-9]|30)|(02)-(0[1-9]|[12][0-9]))";
@@ -17,11 +18,13 @@ interface BaseTransaction {
 
 export interface INewTransactionBody extends BaseTransaction {
   date: string;
+  partnerName: string;
 }
 
-export interface INewSubTransactionBody extends Omit<BaseTransaction, "value"> {
+export interface INewSubTransactionBody extends BaseTransaction {
   date: string;
-  subTransaction: BaseTransaction[];
+  partnerName: string;
+  subTransaction: Array<BaseTransaction & { id?: string }>;
 }
 
 const BaseTransactionBody = t.Object({
@@ -84,4 +87,9 @@ export const FilterTransactionParams = t.Object({
   ),
   categoryId: t.Optional(t.String({ pattern: "^\\d*$" })),
 });
-export const GetByIdParams = t.Object({ id: t.String({ pattern: "^\\d*$" }) });
+
+export const EditTransactionBody = t.Object(madeSchemaOptional(NewTransactionBody))
+export const EditSubTransactionBody = t.Object(madeSchemaOptional(NewSubTransactionBody))
+export const GetByIdParams = t.Object({
+  transactionId: t.String(),
+});

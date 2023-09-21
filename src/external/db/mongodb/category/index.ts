@@ -1,36 +1,35 @@
-import { Database } from "@db/types/database";
-import { IFilterCategoryParams, INewCategoryBody } from "@entrypoint/v1/category/models";
-import { Prisma } from "@prisma/client";
+import {
+  IFilterCategoryParams,
+  INewCategoryBody,
+} from "@entrypoint/v1/category/models";
+import { PrismaDatabase } from "@db/mongodb/config/prisma-database.ts";
 
-export class CategoryDatabase {
-  instance?: Database;
+export class CategoryDatabase implements PrismaDatabase {
+  instance?: PrismaDatabase;
 
-  constructor(instance: Database) {
+  constructor(instance: PrismaDatabase) {
     this.instance = instance;
-    instance.setCollection("category");
   }
 
-  async run<T>(callback: () => Promise<T>): Promise<T> {
-    return await this.instance!.run(callback);
+  async run(callback: () => Promise<any>) {
+    return this.instance?.run(callback);
   }
-
   async create(data: INewCategoryBody) {
     const callback = async () => {
-      return this.instance!.create<
-        Prisma.CategoryCreateArgs["data"],
-        Prisma.CategorySelect
-      >(data);
+      return this.instance?.db?.category.create({
+        data: {
+          type: data.type,
+          description: data.description,
+        },
+      });
     };
 
     return await this.run(callback);
   }
 
-  async getById(id: string) {
+  async findById(id: string) {
     const callback = async () => {
-      return this.instance!.findById<
-        Prisma.CategoryFindUniqueArgs,
-        Prisma.CategorySelect
-      >(id);
+      return this.instance?.db?.category.findUnique({ where: { id } });
     };
 
     return await this.run(callback);
@@ -38,10 +37,7 @@ export class CategoryDatabase {
 
   async find(filter: IFilterCategoryParams) {
     const callback = async () => {
-      return this.instance!.find<
-        Prisma.CategoryFindManyArgs['where'],
-        Prisma.CategorySelect
-      >(filter);
+      return this.instance?.db?.category.findMany({ where: { ...filter } });
     };
 
     return await this.run(callback);
@@ -49,10 +45,7 @@ export class CategoryDatabase {
 
   async update(id: string, data: Partial<INewCategoryBody>) {
     const callback = async () => {
-      return this.instance!.update<
-        Prisma.CategoryUpdateArgs["data"],
-        Prisma.CategorySelect
-      >(id, data);
+      return this.instance?.db?.category.update({ where: { id }, data });
     };
 
     return await this.run(callback);
@@ -60,9 +53,17 @@ export class CategoryDatabase {
 
   async delete(id: string) {
     const callback = async () => {
-      return this.instance!.delete(id);
+      return this.instance?.db?.category.delete({ where: { id } });
     };
 
     return await this.run(callback);
+  }
+
+  async connect() {
+    throw new Error("Should uses by PrismaDatabase class");
+  }
+
+  async disconnect() {
+    throw new Error("Should uses by PrismaDatabase class");
   }
 }

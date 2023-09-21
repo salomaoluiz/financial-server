@@ -1,7 +1,9 @@
 import Elysia from "elysia";
 import {
+  EditTransactionBody,
   FilterTransactionParams,
   GetByIdParams,
+  INewTransactionBody,
   NewTransactionBody,
 } from "@entrypoint/v1/transaction/models";
 import { db } from "@db";
@@ -11,15 +13,16 @@ export const singleTransaction = new Elysia({ prefix: "/transaction" })
   .use(db)
   .model({
     newTransaction: NewTransactionBody,
+    editTransaction: EditTransactionBody,
     filterTransactionParams: FilterTransactionParams,
-    getById: GetByIdParams,
+    transactionById: GetByIdParams,
   });
 
 singleTransaction.post(
   "/",
   async ({ body, database, set }) => {
     const instance = database.getTransaction();
-    const result = await instance.create(body);
+    const result = await instance.create(body as INewTransactionBody);
 
     set.status = 200;
     return result;
@@ -46,10 +49,10 @@ singleTransaction.get(
 );
 
 singleTransaction.get(
-  "/:id",
+  "/:transactionId",
   async ({ params, database, set }) => {
     const instances = database.getTransaction();
-    const result = await instances.getById(params.id);
+    const result = await instances.findById(params.transactionId);
 
     if (!result) {
       set.status = 404;
@@ -58,29 +61,32 @@ singleTransaction.get(
     set.status = 200;
     return result;
   },
-  { params: "getById" },
+  { params: "transactionById" },
 );
 
 singleTransaction.put(
-  "/:id",
+  "/:transactionId",
   async ({ params, database, set, body }) => {
     const instances = database.getTransaction();
-    const result = await instances.update(params.id, body);
+    const result = await instances.update(
+      params.transactionId,
+      body as INewTransactionBody,
+    );
 
     set.status = 200;
     return result;
   },
-  { params: "getById", body: "newTransaction" },
+  { params: "transactionById", body: "newTransaction" },
 );
 
 singleTransaction.delete(
-  "/:id",
+  "/:transactionId",
   async ({ params, database, set }) => {
     const instances = database.getTransaction();
-    const result = await instances.delete(params.id);
+    const result = await instances.delete(params.transactionId);
 
     set.status = 200;
     return result;
   },
-  { params: "getById" },
+  { params: "transactionById" },
 );

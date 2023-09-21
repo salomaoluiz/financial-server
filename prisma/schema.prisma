@@ -16,10 +16,10 @@ enum CategoryType {
 }
 
 model Category {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  description String
-  type        CategoryType
-  transaction Transaction[]
+  id             String           @id @default(auto()) @map("_id") @db.ObjectId
+  description    String
+  type           CategoryType
+  transaction    Transaction[]
 }
 
 model Transaction {

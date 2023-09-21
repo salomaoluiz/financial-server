@@ -3,6 +3,8 @@ import {
   EditCategoryBody,
   FilterCategoryParams,
   GetByIdParams,
+  IFilterCategoryParams,
+  INewCategoryBody,
   NewCategoryBody,
 } from "./models";
 import { db } from "@db";
@@ -14,14 +16,14 @@ export const categoryRoute = new Elysia({ prefix: "/category" })
     newCategory: NewCategoryBody,
     editCategory: EditCategoryBody,
     filterCategory: FilterCategoryParams,
-    getById: GetByIdParams,
+    categoryById: GetByIdParams,
   });
 
 categoryRoute.post(
   "/",
   async ({ body, database, set }) => {
     const instance = database.getCategory();
-    const result = await instance.create(body);
+    const result = await instance.create(body as INewCategoryBody);
 
     set.status = 200;
     return result;
@@ -33,7 +35,7 @@ categoryRoute.get(
   "/",
   async ({ query, database, set }) => {
     const instances = database.getCategory();
-    const result = await instances.find(query);
+    const result = await instances.find(query as IFilterCategoryParams);
 
     if (!result) {
       set.status = 404;
@@ -51,7 +53,7 @@ categoryRoute.get(
   "/:id",
   async ({ params, database, set }) => {
     const instances = database.getCategory();
-    const result = await instances.getById(params.id);
+    const result = await instances.findById(params.id);
 
     if (!result) {
       set.status = 404;
@@ -60,7 +62,7 @@ categoryRoute.get(
     set.status = 200;
     return result;
   },
-  { params: "getById" },
+  { params: "categoryById" },
 );
 
 categoryRoute.put(
@@ -72,7 +74,7 @@ categoryRoute.put(
     set.status = 200;
     return result;
   },
-  { params: "getById", body: "editCategory" },
+  { params: "categoryById", body: "editCategory" },
 );
 
 categoryRoute.delete(
@@ -84,5 +86,5 @@ categoryRoute.delete(
     set.status = 200;
     return result;
   },
-  { params: "getById" },
+  { params: "categoryById" },
 );
