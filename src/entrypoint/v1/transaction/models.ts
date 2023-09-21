@@ -33,6 +33,7 @@ export const NewTransactionBody = t.Object(
   {
     ...BaseTransactionBody.properties,
     value: t.Number({ exclusiveMinimum: 0 }),
+    partnerName: t.Optional(t.String({ default: "Mercado da Esquina" })),
     date: t.String({
       format: "date",
       pattern: jsRegexDatePattern,
@@ -47,6 +48,7 @@ export const NewTransactionBody = t.Object(
 
 export const NewSubTransactionBody = t.Object({
   ...BaseTransactionBody.properties,
+  partnerName: t.Optional(t.String({ default: "Mercado da Esquina" })),
   date: t.String({
     format: "date",
     pattern: jsRegexDatePattern,
