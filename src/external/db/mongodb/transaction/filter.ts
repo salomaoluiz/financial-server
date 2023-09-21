@@ -6,7 +6,7 @@ const handleCustomObject = (
 ): Prisma.TransactionFindManyArgs["where"] | null => {
   if (filter.startDate) return { date: { gte: filter.startDate } };
   if (filter.endDate) return { date: { lte: filter.endDate } };
-  if (filter.categoryId) return { categoryId: parseInt(filter.categoryId) };
+  if (filter.categoryId) return { categoryId: filter.categoryId };
   return null;
 };
 

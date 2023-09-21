@@ -9,16 +9,29 @@ const jsRegexHourPattern =
 
 const jsRegexDatePattern = `${jsRegexMonthPattern}T${jsRegexHourPattern}`;
 
-export interface INewTransactionBody {
+interface BaseTransaction {
   description: string;
+  categoryId: string;
   value: number;
-  date: string;
-  categoryId: number;
 }
+
+export interface INewTransactionBody extends BaseTransaction {
+  date: string;
+}
+
+export interface INewSubTransactionBody extends Omit<BaseTransaction, "value"> {
+  date: string;
+  subTransaction: BaseTransaction[];
+}
+
+const BaseTransactionBody = t.Object({
+  description: t.String(),
+  categoryId: t.String({ default: "65074dfff07e0c6b1ba1a2ec" }),
+});
 
 export const NewTransactionBody = t.Object(
   {
-    description: t.String(),
+    ...BaseTransactionBody.properties,
     value: t.Number({ exclusiveMinimum: 0 }),
     date: t.String({
       format: "date",
@@ -26,12 +39,27 @@ export const NewTransactionBody = t.Object(
       default: new Date().toISOString(),
       error: `The date is not a valid date, try something like: ${new Date().toISOString()}`,
     }),
-    categoryId: t.Number({ multipleOf: 1, minimum: 1 }),
   },
   {
     additionalProperties: false,
   },
 );
+
+export const NewSubTransactionBody = t.Object({
+  ...BaseTransactionBody.properties,
+  date: t.String({
+    format: "date",
+    pattern: jsRegexDatePattern,
+    default: new Date().toISOString(),
+    error: `The date is not a valid date, try something like: ${new Date().toISOString()}`,
+  }),
+  subTransaction: t.Array(
+    t.Object({
+      ...BaseTransactionBody.properties,
+      value: t.Number({ exclusiveMinimum: 0 }),
+    }),
+  ),
+});
 
 export interface IFilterTransactionParams {
   startDate?: string;
