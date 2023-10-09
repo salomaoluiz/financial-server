@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun --watch src/index.ts",
+    "postinstall": "bun prisma format && bun prisma generate",
     "migrate:dev": "bun prisma migrate dev --name init"
   },
   "devDependencies": {
