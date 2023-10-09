@@ -72,6 +72,7 @@ export class TransactionDatabase implements PrismaDatabase {
     const callback = async () => {
       const hasSubTransaction = "subTransaction" in data;
 
+
       return this.instance?.db?.transaction.update({
         where: { id },
         data: {
@@ -81,6 +82,7 @@ export class TransactionDatabase implements PrismaDatabase {
               description: subTransaction.description,
               value: subTransaction.value,
               categoryId: subTransaction.categoryId,
+              tags: subTransaction.tags,
             })),
           }),
           description: data.description,
@@ -88,6 +90,8 @@ export class TransactionDatabase implements PrismaDatabase {
           categoryId: data.categoryId,
           date: data.date,
           partnerName: data.partnerName,
+          tags: data.tags,
+
         },
       });
     };

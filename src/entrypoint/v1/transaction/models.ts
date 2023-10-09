@@ -87,7 +87,7 @@ export const FilterTransactionParams = t.Object({
       default: endOfMonth(Date.now()).toISOString(),
     }),
   ),
-  categoryId: t.Optional(t.String({ pattern: "^\\d*$" })),
+  categoryId: t.Optional(t.String()),
 });
 
 export const EditTransactionBody = t.Object(

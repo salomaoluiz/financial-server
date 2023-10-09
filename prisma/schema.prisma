@@ -42,8 +42,9 @@ model Transaction {
 }
 
 type SubTransaction {
-  id          String @db.ObjectId
+  id          String   @db.ObjectId
   description String
-  categoryId  String @db.ObjectId
+  categoryId  String   @db.ObjectId
   value       Float
+  tags        String[]
 }

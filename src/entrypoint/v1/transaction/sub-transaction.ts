@@ -47,7 +47,6 @@ subTransaction.put(
   "/:transactionId",
   async ({ params, database, set, body }) => {
     const instances = database.getTransaction();
-    console.log(params, body);
     const result = await instances.update(
       params.transactionId,
       parseSubTransaction(body as INewSubTransactionBody),

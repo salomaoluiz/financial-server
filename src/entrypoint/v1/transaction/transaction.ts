@@ -76,7 +76,7 @@ singleTransaction.put(
     set.status = 200;
     return result;
   },
-  { params: "transactionById", body: "newTransaction" },
+  { params: "transactionById", body: "editTransaction" },
 );
 
 singleTransaction.delete(
